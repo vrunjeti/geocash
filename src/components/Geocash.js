@@ -15,6 +15,7 @@ export default class Geocash extends React.Component {
         lon: position.coords.longitude
       }})
     })
+    // document.getElementsByClassName('collapsible').collapsible({accordion: true})
   }
 
   setDummyLocation(location) {
@@ -25,10 +26,11 @@ export default class Geocash extends React.Component {
     const { lat, lon } = this.state.position
 
     return (
-      <div>
+      <section>
         <h5>Current location: {lat}, {lon}</h5>
         <Dummies setDummyLocation={this.setDummyLocation} />
-      </div>
+        <Notes />
+      </section>
     )
   }
 }
@@ -38,7 +40,7 @@ const Dummies = ({ setDummyLocation }) => {
   const dummyLocations = Object.keys(dummies)
 
   return (
-    <div className="valign-wrapper">
+    <section className="valign-wrapper">
       <span className="valign" style={margin}>Set Dummy Location:</span>
       {
         dummyLocations.map((loc, i) => {
@@ -53,7 +55,28 @@ const Dummies = ({ setDummyLocation }) => {
           )
         })
       }
-    </div>
+    </section>
+  )
+}
+
+const Notes = () => {
+  return(
+    <section>
+      <ul className="collapsible" data-collapsible="accordion">
+        <li>
+          <div className="collapsible-header">First</div>
+          <div className="collapsible-body"><p>Lorem ipsum dolor sit amet.</p></div>
+        </li>
+        <li>
+          <div className="collapsible-header">Second</div>
+          <div className="collapsible-body"><p>Lorem ipsum dolor sit amet.</p></div>
+        </li>
+        <li>
+          <div className="collapsible-header">Third</div>
+          <div className="collapsible-body"><p>Lorem ipsum dolor sit amet.</p></div>
+        </li>
+      </ul>
+    </section>
   )
 }
 

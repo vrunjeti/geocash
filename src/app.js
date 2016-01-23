@@ -9,7 +9,7 @@ export default class App extends React.Component {
         <body>
           <nav>
             <div className="nav-wrapper container">
-              <div className="brand-logo">Geocash</div>
+              <div className="brand-logo">Geoca$h</div>
             </div>
           </nav>
           <div className="container">

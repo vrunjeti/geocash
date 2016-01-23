@@ -4,30 +4,36 @@ import { render } from 'react-dom'
 export default class Geocash extends React.Component {
   constructor(props) {
     super(props)
-    this.state = {position: {}}
+    this.state = {location: {}}
     this.setDummyLocation = this.setDummyLocation.bind(this)
   }
 
   componentDidMount() {
-    navigator.geolocation.getCurrentPosition(position => {
-      this.setState({ position: {
-        lat: position.coords.latitude,
-        lon: position.coords.longitude
+    navigator.geolocation.getCurrentPosition(location => {
+      this.setState({ location: {
+        lat: location.coords.latitude,
+        lon: location.coords.longitude
       }})
     })
     // document.getElementsByClassName('collapsible').collapsible({accordion: true})
   }
 
   setDummyLocation(location) {
-    this.setState({position: dummies[location]})
+    this.setState({location: dummies[location]})
+  }
+
+  getLocationFromCoords(coords) {
+    return Object.keys(dummies)
+      .find(city => dummies[city].lat === coords.lat && dummies[city].lon === coords.lon)
   }
 
   render() {
-    const { lat, lon } = this.state.position
+    const { lat, lon } = this.state.location
+    const currLocation = this.getLocationFromCoords(this.state.location) || `${lat}, ${lon}`
 
     return (
       <section>
-        <h5>Current location: {lat}, {lon}</h5>
+        <h5>Current location: {currLocation}</h5>
         <Dummies setDummyLocation={this.setDummyLocation} />
         <Notes />
       </section>

@@ -6,48 +6,63 @@ export default class Geocash extends React.Component {
     super(props)
     this.state = {location: {}}
     this.setDummyLocation = this.setDummyLocation.bind(this)
+    this.setToCurrentLocation = this.setToCurrentLocation.bind(this)
   }
 
   componentDidMount() {
     navigator.geolocation.getCurrentPosition(location => {
-      this.setState({ location: {
+      const loc = {
         lat: location.coords.latitude,
         lon: location.coords.longitude
-      }})
+      }
+      this.setState({location: loc})
+      localStorage.setItem('currLocation', JSON.stringify(loc))
     })
+
     // document.getElementsByClassName('collapsible').collapsible({accordion: true})
   }
 
   setDummyLocation(location) {
-    this.setState({location: dummies[location]})
+    this.setState({
+      location: dummies[location],
+      locationName: location
+    })
   }
 
-  getLocationFromCoords(coords) {
-    return Object.keys(dummies)
-      .find(city => dummies[city].lat === coords.lat && dummies[city].lon === coords.lon)
+  setToCurrentLocation() {
+    this.setState({
+      location: localStorage.currLocation,
+      locationName: 'Current Location'
+    })
   }
 
   render() {
-    const { lat, lon } = this.state.location
-    const currLocation = this.getLocationFromCoords(this.state.location) || `${lat}, ${lon}`
+    const { locationName, location } = this.state
+    const { lat, lon } = location
 
     return (
       <section>
-        <h5>Current location: {currLocation}</h5>
-        <Dummies setDummyLocation={this.setDummyLocation} />
+        <h5>Current location: {locationName || 'Current Location'}</h5>
+        <Dummies setDummyLocation={this.setDummyLocation} setToCurrentLocation={this.setToCurrentLocation}/>
         <Notes />
       </section>
     )
   }
 }
 
-const Dummies = ({ setDummyLocation }) => {
+const Dummies = ({ setDummyLocation, setToCurrentLocation }) => {
   const margin = { margin: '0 5px 0' }
   const dummyLocations = Object.keys(dummies)
 
   return (
     <section className="valign-wrapper">
       <span className="valign" style={margin}>Set Dummy Location:</span>
+      <span
+        className="valign chip"
+        style={margin}
+        onClick={setToCurrentLocation}>
+        Current Location
+      </span>
       {
         dummyLocations.map((loc, i) => {
           return (

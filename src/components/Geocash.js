@@ -18,8 +18,6 @@ export default class Geocash extends React.Component {
       this.setState({location: loc})
       localStorage.setItem('currLocation', JSON.stringify(loc))
     })
-
-    // document.getElementsByClassName('collapsible').collapsible({accordion: true})
   }
 
   setDummyLocation(location) {
@@ -42,7 +40,7 @@ export default class Geocash extends React.Component {
 
     return (
       <section>
-        <h5>Current location: {locationName || 'Current Location'}</h5>
+        <h5>Now Looking At: {locationName || 'Current Location'}</h5>
         <Dummies setDummyLocation={this.setDummyLocation} setToCurrentLocation={this.setToCurrentLocation}/>
         <Notes />
       </section>

@@ -102,7 +102,7 @@ export default class Geocash extends React.Component {
           className="modal-trigger fab btn-floating btn-large waves-effect waves-light red">
           <i className="fa fa-plus"></i>
         </button>
-        <Modal notes={notes} location={location}/>
+        <Modal notes={notes} location={location} getNotes={this.getNotes}/>
       </section>
     )
   }

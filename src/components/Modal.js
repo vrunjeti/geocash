@@ -17,7 +17,7 @@ export default class Modal extends React.Component {
 
   addNote() {
     let { notes } = this.props
-    const { location } = this.props
+    const { location, getNotes } = this.props
     const { title, note } = this.state
 
     notes.push({
@@ -30,6 +30,7 @@ export default class Modal extends React.Component {
       title: '',
       note: ''
     })
+    getNotes()
   }
 
   render() {

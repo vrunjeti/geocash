@@ -28,8 +28,11 @@ export default class Geocash extends React.Component {
     // jQuery loads after component renders... so gg setTimeout...
     setTimeout(function() {
       $('.modal-trigger').leanModal({
-        dismissible: true, // Modal can be dismissed by clicking outside of the modal
+        dismissible: true,
         opacity: .5
+      })
+      $('.collapsible').collapsible({
+        accordion : true
       })
     }, 500)
 

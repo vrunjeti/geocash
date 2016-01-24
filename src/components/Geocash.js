@@ -1,13 +1,17 @@
 import React from 'react'
 import { render } from 'react-dom'
+import Modal from './Modal'
 
 export default class Geocash extends React.Component {
   constructor(props) {
     super(props)
-    this.state = {location: {}}
+    this.state = {
+      location: {},
+      notes: []
+    }
     this.setDummyLocation = this.setDummyLocation.bind(this)
     this.setToCurrentLocation = this.setToCurrentLocation.bind(this)
-    this.openModal = this.openModal.bind(this)
+    this.getNotes = this.getNotes.bind(this)
   }
 
   componentDidMount() {
@@ -20,13 +24,13 @@ export default class Geocash extends React.Component {
       localStorage.setItem('currLocation', JSON.stringify(loc))
     })
 
+    this.getNotes()
+
     // jQuery loads after component renders... so gg setTimeout...
     setTimeout(function() {
       $('.modal-trigger').leanModal({
         dismissible: true, // Modal can be dismissed by clicking outside of the modal
-        opacity: .5, // Opacity of modal background
-        in_duration: 300, // Transition in duration
-        out_duration: 200 // Transition out duration
+        opacity: .5
       })
     }, 500)
 
@@ -46,50 +50,30 @@ export default class Geocash extends React.Component {
     })
   }
 
-  openModal() {
-
-  }
-
-  addNote() {
-
+  getNotes() {
+    let notes = localStorage['notes']
+    notes = notes ? JSON.parse(notes) : []
+    this.setState({notes: notes})
   }
 
   render() {
-    const { locationName, location } = this.state
+    const { locationName, location, notes } = this.state
     const { lat, lon } = location
 
     return (
       <section>
         <h5>You Are In: {locationName || 'Current Location'}</h5>
         <Dummies setDummyLocation={this.setDummyLocation} setToCurrentLocation={this.setToCurrentLocation}/>
-        <Notes />
+        <Notes notes={notes}/>
         <button
           data-target="add-note-modal"
           className="modal-trigger fab btn-floating btn-large waves-effect waves-light red">
           <i className="fa fa-plus"></i>
         </button>
-        <Modal />
+        <Modal notes={notes} location={location}/>
       </section>
     )
   }
-}
-
-const Modal = () => {
-  return (
-    <div id="add-note-modal" className="modal">
-      <div className="modal-content">
-        <h4>Add A New Note</h4>
-        <input placeholder="Title" id="first_name" type="text" />
-        <div className="input-field col s12">
-          <textarea id="textarea-note" className="materialize-textarea"></textarea>
-          <label htmlFor="textarea-note">Enter Note</label>
-        </div>
-      </div>
-      <div className="modal-footer">
-        <button className=" modal-action modal-close waves-effect waves-green btn-flat">Submit</button>
-      </div>
-    </div>
-  )
 }
 
 const Dummies = ({ setDummyLocation, setToCurrentLocation }) => {
@@ -122,22 +106,20 @@ const Dummies = ({ setDummyLocation, setToCurrentLocation }) => {
   )
 }
 
-const Notes = () => {
+const Notes = ({ notes }) => {
   return(
     <section>
       <ul className="collapsible" data-collapsible="accordion">
-        <li>
-          <div className="collapsible-header">First</div>
-          <div className="collapsible-body"><p>Lorem ipsum dolor sit amet.</p></div>
-        </li>
-        <li>
-          <div className="collapsible-header">Second</div>
-          <div className="collapsible-body"><p>Lorem ipsum dolor sit amet.</p></div>
-        </li>
-        <li>
-          <div className="collapsible-header">Third</div>
-          <div className="collapsible-body"><p>Lorem ipsum dolor sit amet.</p></div>
-        </li>
+        {
+          notes.map((note, i) => {
+            return (
+              <li key={note.title + note.note + i}>
+                <div className="collapsible-header">{note.title}</div>
+                <div className="collapsible-body"><p>{note.note}</p></div>
+              </li>
+            )
+          })
+        }
       </ul>
     </section>
   )

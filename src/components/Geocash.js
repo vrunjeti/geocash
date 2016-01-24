@@ -22,9 +22,8 @@ export default class Geocash extends React.Component {
       }
       this.setState({location: loc})
       localStorage.setItem('currLocation', JSON.stringify(loc))
+      this.getNotes()
     })
-
-    this.getNotes()
 
     // jQuery loads after component renders... so gg setTimeout...
     setTimeout(function() {
@@ -40,31 +39,61 @@ export default class Geocash extends React.Component {
     this.setState({
       location: dummies[location],
       locationName: location
-    })
+    }, this.getNotesWithinDistance.bind(this, 1))
   }
 
   setToCurrentLocation() {
     this.setState({
-      location: localStorage.currLocation,
+      location: JSON.parse(localStorage.currLocation),
       locationName: 'Current Location'
-    })
+    }, this.getNotesWithinDistance.bind(this, 1))
   }
 
   getNotes() {
     let notes = localStorage['notes']
+    // console.log('notezzzz', notes)
     notes = notes ? JSON.parse(notes) : []
-    this.setState({notes: notes})
+    // console.log('notesssss', notes)
+    this.setState({notes: notes}, this.getNotesWithinDistance.bind(this, 1))
+
+  }
+
+  distance(coords1, coords2) {
+    const R = 6371
+    return Math.acos(Math.sin(coords1.lat)*Math.sin(coords2.lat) +
+      Math.cos(coords1.lat)*Math.cos(coords2.lat) *
+      Math.cos(coords2.lon - coords1.lon)) * R
+  }
+
+  getNotesWithinDistance(dist) {
+    // console.log('hi')
+    const { notes, location } = this.state
+
+    console.log('location', location)
+    console.log('notes', notes)
+
+    const notesWithinDistance = notes.filter(note => {
+      console.log(location, note.location)
+      return this.distance(location, note.location) <= dist
+    })
+    console.log('meep', notesWithinDistance)
+
+    this.setState({
+      notesWithinDistance: notesWithinDistance
+    })
   }
 
   render() {
-    const { locationName, location, notes } = this.state
+    const { locationName, location, notes, notesWithinDistance } = this.state
     const { lat, lon } = location
+
+    // console.log('notesWithinDistance', notesWithinDistance)
 
     return (
       <section>
         <h5>You Are In: {locationName || 'Current Location'}</h5>
         <Dummies setDummyLocation={this.setDummyLocation} setToCurrentLocation={this.setToCurrentLocation}/>
-        <Notes notes={notes}/>
+        {notesWithinDistance && <Notes notes={notesWithinDistance}/>}
         <button
           data-target="add-note-modal"
           className="modal-trigger fab btn-floating btn-large waves-effect waves-light red">

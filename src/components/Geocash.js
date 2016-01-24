@@ -7,6 +7,7 @@ export default class Geocash extends React.Component {
     this.state = {location: {}}
     this.setDummyLocation = this.setDummyLocation.bind(this)
     this.setToCurrentLocation = this.setToCurrentLocation.bind(this)
+    this.openModal = this.openModal.bind(this)
   }
 
   componentDidMount() {
@@ -18,6 +19,17 @@ export default class Geocash extends React.Component {
       this.setState({location: loc})
       localStorage.setItem('currLocation', JSON.stringify(loc))
     })
+
+    // jQuery loads after component renders... so gg setTimeout...
+    setTimeout(function() {
+      $('.modal-trigger').leanModal({
+        dismissible: true, // Modal can be dismissed by clicking outside of the modal
+        opacity: .5, // Opacity of modal background
+        in_duration: 300, // Transition in duration
+        out_duration: 200 // Transition out duration
+      })
+    }, 500)
+
   }
 
   setDummyLocation(location) {
@@ -34,18 +46,50 @@ export default class Geocash extends React.Component {
     })
   }
 
+  openModal() {
+
+  }
+
+  addNote() {
+
+  }
+
   render() {
     const { locationName, location } = this.state
     const { lat, lon } = location
 
     return (
       <section>
-        <h5>Now Looking At: {locationName || 'Current Location'}</h5>
+        <h5>You Are In: {locationName || 'Current Location'}</h5>
         <Dummies setDummyLocation={this.setDummyLocation} setToCurrentLocation={this.setToCurrentLocation}/>
         <Notes />
+        <button
+          data-target="add-note-modal"
+          className="modal-trigger fab btn-floating btn-large waves-effect waves-light red">
+          <i className="fa fa-plus"></i>
+        </button>
+        <Modal />
       </section>
     )
   }
+}
+
+const Modal = () => {
+  return (
+    <div id="add-note-modal" className="modal">
+      <div className="modal-content">
+        <h4>Add A New Note</h4>
+        <input placeholder="Title" id="first_name" type="text" />
+        <div className="input-field col s12">
+          <textarea id="textarea-note" className="materialize-textarea"></textarea>
+          <label htmlFor="textarea-note">Enter Note</label>
+        </div>
+      </div>
+      <div className="modal-footer">
+        <button className=" modal-action modal-close waves-effect waves-green btn-flat">Submit</button>
+      </div>
+    </div>
+  )
 }
 
 const Dummies = ({ setDummyLocation, setToCurrentLocation }) => {
@@ -54,7 +98,7 @@ const Dummies = ({ setDummyLocation, setToCurrentLocation }) => {
 
   return (
     <section className="valign-wrapper">
-      <span className="valign" style={margin}>Set Dummy Location:</span>
+      <span className="valign" style={margin}>Teleport To:</span>
       <span
         className="valign chip"
         style={margin}

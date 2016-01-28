@@ -54,9 +54,7 @@ export default class Geocash extends React.Component {
 
   getNotes() {
     let notes = localStorage['notes']
-    // console.log('notezzzz', notes)
     notes = notes ? JSON.parse(notes) : []
-    // console.log('notesssss', notes)
     this.setState({notes: notes}, this.getNotesWithinDistance.bind(this, 1))
 
   }
@@ -69,17 +67,10 @@ export default class Geocash extends React.Component {
   }
 
   getNotesWithinDistance(dist) {
-    // console.log('hi')
     const { notes, location } = this.state
-
-    console.log('location', location)
-    console.log('notes', notes)
-
     const notesWithinDistance = notes.filter(note => {
-      console.log(location, note.location)
       return this.distance(location, note.location) <= dist
     })
-    console.log('meep', notesWithinDistance)
 
     this.setState({
       notesWithinDistance: notesWithinDistance
@@ -89,8 +80,6 @@ export default class Geocash extends React.Component {
   render() {
     const { locationName, location, notes, notesWithinDistance } = this.state
     const { lat, lon } = location
-
-    // console.log('notesWithinDistance', notesWithinDistance)
 
     return (
       <section>
